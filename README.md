@@ -6,11 +6,11 @@
 
 ## ✨ Features
 
-- Time-based animation updates
-- Playback controls: play, pause, reset
-- Horizontal and vertical flipping support
-- Easy quad generation via grid system
-- Dynamic speed adjustment
+- Time-based animation updates  
+- Playback controls: play, pause, reset  
+- Horizontal and vertical flipping support  
+- Easy quad generation via grid system  
+- Dynamic speed adjustment  
 
 ---
 
@@ -29,8 +29,8 @@ local animat = require("animat")
 ```lua
 -- Load sprite and create animation
 local sprite = love.graphics.newImage("spritesheet.png")
-local grid = animat.newGrid(32, 32, sprite:getWidth(), sprite:getHeight())
-local animation = animat.newAnimation(grid("1-4", 1), 0.1)
+local grid = animat.newGrid(sprite, 6, 4) -- 6 columns, 4 rows
+local animation = animat.newAnimation(grid("1-4", 2), 0.1)
 
 function love.update(dt)
   animation:update(dt)
@@ -45,8 +45,12 @@ end
 
 ## 🧱 API
 
-### `animat.newGrid(w, h, imageWidth, imageHeight)`
-Returns a function that generates a list of `Quad` objects based on column and row ranges.
+### `animat.newGrid(spriteSheet, columns, rows)`
+Returns a function that generates a list of `Quad` objects based on column and row ranges.  
+- `spriteSheet`: a `love.graphics.Image`  
+- `columns`: number of columns in the spritesheet  
+- `rows`: number of rows (lines) in the spritesheet  
+- Usage: `grid("1-6", 4)` to get columns 1 to 6 from row 4
 
 ### `animat.newAnimation(frames, interval)`
 Creates a new animation object with the given frames and frame interval.
