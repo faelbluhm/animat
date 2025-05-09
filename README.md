@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# animat
-=======
 # 🌀 Animat
 
 **Animat** is a lightweight and responsive animation library for managing sprite animations in the [LÖVE2D](https://love2d.org) framework. Inspired by `anim8`, it focuses on simplicity and flexibility.
@@ -73,4 +70,3 @@ MIT © 2025 Rafael de Carvalho Bluhm
 ## 📫 Contributing
 
 Contributions, ideas, and improvements are welcome! Feel free to open an issue or a pull request.
->>>>>>> def1156 (first commit)
