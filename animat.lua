@@ -130,22 +130,19 @@ function animMethods:draw(image, x, y, r, sx, sy, ox, oy)
   love.graphics.draw(image, frame, x, y, r or 0, scaleX, scaleY, originX, originY)
 end
 
--- Creates a frame grid generator for spritesheets.
--- @param frameWidth Width of each frame
--- @param frameHeight Height of each frame
--- @param imageWidth Width of the image (optional)
--- @param imageHeight Height of the image (optional)
--- @return A function that returns a list of quads when given column and row ranges
-function animat.newGrid(frameWidth, frameHeight, imageWidth, imageHeight)
-  if not imageHeight and type(frameWidth) == "userdata" and frameWidth:type() == "Image" then
-    local spriteSheet = frameWidth
-    frameWidth = frameHeight
-    frameHeight = imageWidth
-    imageWidth = spriteSheet:getWidth()
-    imageHeight = spriteSheet:getHeight()
-  end
+--- Creates a frame grid generator for spritesheets.
+-- @param spriteSheet love.graphics.Image The spritesheet image.
+-- @param columns number Number of columns in the spritesheet.
+-- @param lines number Number of rows in the spritesheet.
+-- @return function A grid function that returns quads when given column and row ranges (e.g., "1-6", 4).
+function animat.newGrid(spriteSheet, columns, lines)
+  local imageWidth = spriteSheet:getWidth()
+  local imageHeight = spriteSheet:getHeight()
 
-  local grid = function(columns, rows)
+  local frameWidth = imageWidth / columns
+  local frameHeight = imageHeight / lines
+
+  local function grid(colRange, rowRange)
     local quads = {}
 
     local function parseRange(str)
@@ -159,12 +156,12 @@ function animat.newGrid(frameWidth, frameHeight, imageWidth, imageHeight)
       end
     end
 
-    local startCol, endCol = parseRange(columns)
+    local startCol, endCol = parseRange(colRange)
     local startRow, endRow
-    if type(rows) == "string" then
-      startRow, endRow = parseRange(rows)
+    if type(rowRange) == "string" then
+      startRow, endRow = parseRange(rowRange)
     else
-      startRow, endRow = rows, rows
+      startRow, endRow = rowRange, rowRange
     end
 
     for row = startRow, endRow do
