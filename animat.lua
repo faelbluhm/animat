@@ -136,45 +136,46 @@ end
 -- @param lines number Number of rows in the spritesheet.
 -- @return function A grid function that returns quads when given column and row ranges (e.g., "1-6", 4).
 function animat.newGrid(spriteSheet, columns, lines)
-  local imageWidth = spriteSheet:getWidth()
-  local imageHeight = spriteSheet:getHeight()
+  -- Input validations
+  assert(spriteSheet, "Sprite sheet is required")
+  assert(type(columns) == "number" and columns > 0, "Invalid number of columns")
+  assert(type(lines) == "number" and lines > 0, "Invalid number of lines")
 
-  local frameWidth = imageWidth / columns
-  local frameHeight = imageHeight / lines
+  local imageWidth, imageHeight = spriteSheet:getWidth(), spriteSheet:getHeight()
+  local frameWidth, frameHeight = imageWidth / columns, imageHeight / lines
+
+  -- Verify frame dimensions
+  assert(frameWidth > 0 and frameHeight > 0, "Invalid frame dimensions")
+
+  local function parseRange(rangeStr)
+    if type(rangeStr) == "number" then
+      return rangeStr, rangeStr
+    end
+    local start, finish = rangeStr:match("^(%d+)-(%d+)$")
+    start, finish = tonumber(start), tonumber(finish)
+    assert(start and finish and start <= finish, "Invalid range format: " .. tostring(rangeStr))
+    return start, finish
+  end
 
   local function grid(colRange, rowRange)
     local quads = {}
-
-    local function parseRange(str)
-      local start, finish = str:match("^(%d+)-(%d+)$")
-      if start then
-        return tonumber(start), tonumber(finish)
-      else
-        local value = tonumber(str)
-        assert(value, "Invalid range string: " .. tostring(str))
-        return value, value
-      end
-    end
-
     local startCol, endCol = parseRange(colRange)
-    local startRow, endRow
-    if type(rowRange) == "string" then
-      startRow, endRow = parseRange(rowRange)
-    else
-      startRow, endRow = rowRange, rowRange
-    end
+    local startRow, endRow = parseRange(rowRange)
+
+    -- Validate ranges
+    assert(startCol >= 1 and endCol <= columns, "Column range out of bounds")
+    assert(startRow >= 1 and endRow <= lines, "Row range out of bounds")
 
     for row = startRow, endRow do
       for col = startCol, endCol do
-        local quad = love.graphics.newQuad(
+        table.insert(quads, love.graphics.newQuad(
           (col - 1) * frameWidth,
           (row - 1) * frameHeight,
           frameWidth,
           frameHeight,
           imageWidth,
           imageHeight
-        )
-        table.insert(quads, quad)
+        ))
       end
     end
 
