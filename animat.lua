@@ -101,14 +101,16 @@ end
 -- @param newInterval Frame interval in seconds (must be > 0)
 function animMethods:setInterval(newInterval)
   assert(type(newInterval) == "number" and newInterval > 0, "Invalid interval")
-  self.interval = newInterval
+  self.baseInterval = newInterval
+  self.interval = self.baseInterval / self.speedMultiplier
 end
 
 -- Adjusts the animation speed by a multiplier.
 -- @param multiplier Speed multiplier (must be > 0)
 function animMethods:setSpeed(multiplier)
   assert(type(multiplier) == "number" and multiplier > 0, "Invalid speed multiplier")
-  self.interval = self.interval / multiplier
+  self.speedMultiplier = multiplier
+  self.interval = self.baseInterval / self.speedMultiplier
 end
 
 -- Draws the current frame of the animation.
@@ -192,14 +194,17 @@ end
 function animat.newAnimation(frames, interval)
   local anim = {
     frames = frames,
-    interval = interval or 0.1,
+    baseInterval = interval or 0.1,
+    speedMultiplier = 1,
     timer = 0,
     currentFrame = 1,
     playing = true,
     flipH = false,
     flipV = false,
   }
+  anim.interval = anim.baseInterval / anim.speedMultiplier
   return setmetatable(anim, { __index = animMethods })
 end
+
 
 return animat
