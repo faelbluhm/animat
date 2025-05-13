@@ -127,8 +127,15 @@ function animMethods:draw(image, x, y, r, sx, sy, ox, oy)
   local quadW, quadH = select(3, frame:getViewport())
   local scaleX = (sx or 1) * (self.flipH and -1 or 1)
   local scaleY = (sy or 1) * (self.flipV and -1 or 1)
-  local originX = self.flipH and quadW or (ox or 0)
-  local originY = self.flipV and quadH or (oy or 0)
+  local originX = ox or 0
+  local originY = oy or 0
+
+  if self.flipH then
+    originX = (ox or 0) * -1 + quadW
+  end
+  if self.flipV then
+    originY = (oy or 0) * -1 + quadH
+  end
   love.graphics.draw(image, frame, x, y, r or 0, scaleX, scaleY, originX, originY)
 end
 
@@ -205,6 +212,5 @@ function animat.newAnimation(frames, interval)
   anim.interval = anim.baseInterval / anim.speedMultiplier
   return setmetatable(anim, { __index = animMethods })
 end
-
 
 return animat
